@@ -59,5 +59,6 @@ class PatternPainter {
 function tryParse(input: string) {
     const str = decodeURI(input.substr(1));
     try { return JSON.parse(atob(str)); } catch { }
+    try { return JSON.parse(decodeURI(atob(str))); } catch { }
     try { return JSON.parse(str); } catch { }
 }

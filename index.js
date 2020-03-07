@@ -57,7 +57,11 @@ function tryParse(input) {
     }
     catch (_a) { }
     try {
-        return JSON.parse(str);
+        return JSON.parse(decodeURI(atob(str)));
     }
     catch (_b) { }
+    try {
+        return JSON.parse(str);
+    }
+    catch (_c) { }
 }

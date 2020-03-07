@@ -25,6 +25,7 @@
 <body>
     <canvas id="canvas" width="300" height="300"></canvas>
     <div class="container p-5" class="z-index:2; top:0;">
+        <div class="btn btn-info position-relative" onclick="linkB64()">Base64 Link</div>
         <div class="btn btn-info position-relative" onclick="linkMe()">Short Link</div>
         <div id="editor" class="w-100 h-75 m-5 mt-0"> </div>
     </div>
@@ -71,7 +72,7 @@
             try {
                 const content = new Function(editor.session.getValue())();
                 if (content === undefined) { return; }
-                window.location.hash = JSON.stringify(content);
+                window.location.hash = encodeURI(JSON.stringify(content));
                 update();
             } catch (e) { console.log(e); }
         });
@@ -79,6 +80,12 @@
         update();
         window.addEventListener('hashchange', update);
         window.addEventListener('resize', update);
+        function linkB64() {
+            const content = new Function(editor.session.getValue())();
+            if (content === undefined) { return; }
+            const data = encodeURI(JSON.stringify(content));
+            window.open("./index.html#" + btoa(data));
+        }
         function linkMe() {
             window.open("./index.html" + window.location.hash);
         }
