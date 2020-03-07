@@ -27,7 +27,7 @@
     <div class="container p-5" class="z-index:2; top:0;">
         <div class="btn btn-info position-relative" onclick="linkB64()">Base64 Link</div>
         <div class="btn btn-info position-relative" onclick="linkMe()">Short Link</div>
-        <div id="editor" class="w-100 h-75 m-5 mt-0"> </div>
+        <div id="editor" class="w-100 h-75 m-3 mt-0"> </div>
     </div>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.7/ace.js"></script>
     <script src="https://cdn.rawgit.com/beautify-web/js-beautify/v1.10.3/js/lib/beautify.js"></script>
@@ -77,6 +77,10 @@
             } catch (e) { console.log(e); }
         });
 
+        if (window.location.hash === "") {
+            window.location.hash = encodeURI(JSON.stringify(defaultConfig));
+        }
+
         update();
         window.addEventListener('hashchange', update);
         window.addEventListener('resize', update);
@@ -90,6 +94,7 @@
             window.open("./index.html" + window.location.hash);
         }
         function update() {
+
             const currentHash = window.location.hash;
             if (currentHash === previousHash) { return; }
             previousHash = currentHash;
@@ -100,7 +105,7 @@
             const context = canvas.getContext('2d');
             previousHash = currentHash;
             const drawing = tryParse(window.location.hash);
-            if (drawing === undefined) { console.log('no drawing'); return; }
+            if (drawing === "") { console.log('no drawing'); return; }
 
             if (initialized === false) {
                 editor.setValue(js_beautify("return " + JSON.stringify(drawing)));

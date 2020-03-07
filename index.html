@@ -30,6 +30,9 @@
     <script src="index.js"></script>
     <div id="text"></div>
     <script>
+        if (window.location.hash === "") {
+            window.location.hash = encodeURI(JSON.stringify(defaultConfig));
+        }
         const canvas = document.getElementById("canvas");
         canvas.width = window.innerWidth;
         canvas.height = window.innerHeight;

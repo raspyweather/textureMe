@@ -1,3 +1,13 @@
+var defaultConfig = {
+    configs: [
+        {
+            pattern: [[0, 0], [1, 0], [0, 1], [0, 0], [1, 1]],
+            colors: ["0xCC0000", "0x000000"]
+        }
+    ],
+    symmetry: true,
+    text: 'Hi there ☺'
+};
 if (String.prototype["padStart"] === undefined) {
     String.prototype["padStart"] = function (str, char, count) {
         return (str.length >= count) ? str : Array(1 + count - str.length).join(char) + str;
