@@ -37,7 +37,7 @@
         const textItem = document.getElementById("text");
         const drawing = JSON.parse(atob(window.location.hash.substr(1)));
         console.log({ hash: window.location.hash, drawing });
-        textItem.innerText = drawing.text+Array(100).join("-");
+        textItem.innerText = drawing.text;
         const patternPainter = new PatternPainter(context);
         patternPainter.drawPage(drawing);
     </script>
