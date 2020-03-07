@@ -1,0 +1,44 @@
+<head>
+    <style>
+        *,
+        * {
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+        }
+
+        canvas {
+            height: 100%;
+            width: 100%;
+        }
+
+        div {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            max-width: 50%;
+            transform: translateX(-50%) translateY(-50%);
+            font-size: large;
+            font-weight: bold;
+            font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+        }
+    </style>
+</head>
+
+<body>
+    <canvas id="canvas" width="300" height="300"></canvas>
+    <script src="index.js"></script>
+    <div id="text"></div>
+    <script>
+        const canvas = document.getElementById("canvas");
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+        const context = canvas.getContext('2d');
+        const textItem = document.getElementById("text");
+        const drawing = JSON.parse(atob(window.location.hash.substr(1)));
+        console.log({ hash: window.location.hash, drawing });
+        textItem.innerText = drawing.text+Array(100).join("-");
+        const patternPainter = new PatternPainter(context);
+        patternPainter.drawPage(drawing);
+    </script>
+</body>
