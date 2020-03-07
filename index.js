@@ -17,7 +17,7 @@ var PatternPainter = /** @class */ (function () {
             _this.context.fillStyle = color;
             _this.context.fillRect(x * dotW + xOffset, y * dotH + yOffset, dotW, dotH);
         };
-        var pattern = draw.pattern.map(function (row) { return row.map(function (item) { return draw.colors[item]; }); });
+        var pattern = draw.pattern.map(function (row) { return row.map(function (item) { return parseInt(draw.colors[item]); }); });
         var w = window.innerWidth, h = window.innerWidth;
         var dotWCount = w / dotW, dotHCount = h / dotH;
         var x = 0;
@@ -50,3 +50,14 @@ var PatternPainter = /** @class */ (function () {
     };
     return PatternPainter;
 }());
+function tryParse(input) {
+    var str = decodeURI(input.substr(1));
+    try {
+        return JSON.parse(atob(str));
+    }
+    catch (_a) { }
+    try {
+        return JSON.parse(str);
+    }
+    catch (_b) { }
+}

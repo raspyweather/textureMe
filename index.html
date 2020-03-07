@@ -35,7 +35,7 @@
         canvas.height = window.innerHeight;
         const context = canvas.getContext('2d');
         const textItem = document.getElementById("text");
-        const drawing = JSON.parse(atob(window.location.hash.substr(1)));
+        const drawing = tryParse(window.location.hash);
         console.log({ hash: window.location.hash, drawing });
         textItem.innerText = drawing.text;
         const patternPainter = new PatternPainter(context);

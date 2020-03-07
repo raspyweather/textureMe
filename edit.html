@@ -1,0 +1,108 @@
+<head>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+        integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    <style>
+        html,
+        body {
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+        }
+
+        canvas {
+            height: 100vh;
+            width: 100vw;
+            position: absolute;
+        }
+
+        .btn {
+            z-index: 1;
+        }
+    </style>
+
+</head>
+
+<body>
+    <canvas id="canvas" width="300" height="300"></canvas>
+    <div class="container p-5" class="z-index:2; top:0;">
+        <div class="btn btn-info position-relative" onclick="linkMe()">Short Link</div>
+        <div id="editor" class="w-100 h-75 m-5 mt-0"> </div>
+    </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.7/ace.js"></script>
+    <script src="https://cdn.rawgit.com/beautify-web/js-beautify/v1.10.3/js/lib/beautify.js"></script>
+    <script src="index.js"></script>
+    <script>
+        let previousHash = '';
+        let initialized = false;
+        const editor = ace.edit("editor");
+        editor.setTheme("ace/theme/twilight");
+        editor.session.setMode("ace/mode/javascript");
+        editor.setOptions({
+            // editor options
+            selectionStyle: 'line',// "line"|"text"
+            highlightActiveLine: true, // boolean
+            highlightSelectedWord: true, // boolean
+            behavioursEnabled: true, // boolean: true if enable custom behaviours
+            wrapBehavioursEnabled: true, // boolean
+
+            // renderer options
+            showGutter: true, // boolean: true if show line gutter
+            showFoldWidgets: true, // boolean: true if the fold lines should be shown ?
+            showLineNumbers: true,
+            highlightGutterLine: false, // boolean: true if the gutter line should be highlighted
+            maxPixelHeight: 0, // number -> maxLines: set the maximum height in pixel, when 'maxLines' is defined. 
+            scrollPastEnd: 0, // number -> !maxLines: if positive, user can scroll pass the last line and go n * editorHeight more distance 
+            fixedWidthGutter: false, // boolean: true if the gutter should be fixed width
+            // mouseHandler options
+            tooltipFollowsMouse: true, // boolean: true if the gutter tooltip should follow mouse
+
+            // session options
+            firstLineNumber: 1, // number: the line number in first line
+            overwrite: false, // boolean
+            newLineMode: 'auto', // "auto" | "unix" | "windows"
+            useWorker: true, // boolean: true if use web worker for loading scripts
+            useSoftTabs: true, // boolean: true if we want to use spaces than tabs
+            tabSize: 4, // number
+            wrap: false, // boolean | string | number: true/'free' means wrap instead of horizontal scroll, false/'off' means horizontal scroll instead of wrap, and number means number of column before wrap. -1 means wrap at print margin
+            indentedSoftWrap: true, // boolean
+            foldStyle: 'markbegin', // enum: 'manual'/'markbegin'/'markbeginend'.
+        });
+        editor.session.on('change', function () {
+            try {
+                const content = new Function(editor.session.getValue())();
+                if (content === undefined) { return; }
+                window.location.hash = JSON.stringify(content);
+                update();
+            } catch (e) { console.log(e); }
+        });
+
+        update();
+        window.addEventListener('hashchange', update);
+        window.addEventListener('resize', update);
+        function linkMe() {
+            window.open("./index.html" + window.location.hash);
+        }
+        function update() {
+            const currentHash = window.location.hash;
+            if (currentHash === previousHash) { return; }
+            previousHash = currentHash;
+
+            const canvas = document.getElementById("canvas");
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+            const context = canvas.getContext('2d');
+            previousHash = currentHash;
+            const drawing = tryParse(window.location.hash);
+            if (drawing === undefined) { console.log('no drawing'); return; }
+
+            if (initialized === false) {
+                editor.setValue(js_beautify("return " + JSON.stringify(drawing)));
+                initialized = true;
+            }
+
+            const patternPainter = new PatternPainter(context);
+            patternPainter.drawPage(drawing);
+        };
+    </script>
+
+</body>

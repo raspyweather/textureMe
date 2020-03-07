@@ -1,10 +1,10 @@
 interface DrawingConfig {
     pattern: number[][];
-    colors: number[];
+    colors: string[];
 }
 
 interface PageConfig {
-    version:string;
+    version: string;
     text: string;
     configs: DrawingConfig[];
     symmetry: boolean;
@@ -25,7 +25,7 @@ class PatternPainter {
             this.context.fillStyle = color;
             this.context.fillRect(x * dotW + xOffset, y * dotH + yOffset, dotW, dotH);
         }
-        const pattern = draw.pattern.map(row => row.map(item => draw.colors[item]));
+        const pattern = draw.pattern.map(row => row.map(item => parseInt(draw.colors[item])));
         const w = window.innerWidth, h = window.innerWidth;
         const dotWCount = w / dotW, dotHCount = h / dotH;
         let x = 0;
@@ -54,4 +54,10 @@ class PatternPainter {
             drawDir(pageConfig.configs.reverse().map(row => { row.pattern = row.pattern.reverse(); return row; }), window.innerHeight - y * dotH);
         }
     }
+}
+
+function tryParse(input: string) {
+    const str = decodeURI(input.substr(1));
+    try { return JSON.parse(atob(str)); } catch { }
+    try { return JSON.parse(str); } catch { }
 }
